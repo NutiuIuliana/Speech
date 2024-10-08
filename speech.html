@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<body>
+ 
+<p id="text"></p>
+<script src = "speech.js">
+
+
+document.addEventListener("touchstart", on_touch);
+document.addEventListener("mousedown", on_touch);
+
+var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'en-US';
+recognition.interimResults = false; 
+let recognition_started = false;
+
+function on_touch() {
+    if (!recognition_started) {
+        recognition.start();
+        recognition_started = true;
+    }
+}
+
+recognition.onend = function() {
+    recognition_started = false;
+    document.getElementById("text").innerHTML += "Recunoașterea s-a oprit.<br>";
+};
+
+recognition.onresult = function(event) {
+    const transcript = event.results[0][0].transcript;
+    const confidence = event.results[0][0].confidence;
+    document.getElementById("text").innerHTML += "Ați rostit cuvântul: " + transcript + ", acuratețe: " + (confidence * 100).toFixed(2) + "%<br>";
+};
+
+recognition.onerror = function(event) {
+    document.getElementById("text").innerHTML += "Eroare: " + event.error + "<br>";
+};
+
+
+
+
+</script>
+</body>
+
+
+
+</html>
